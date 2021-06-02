@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
 
-        public string FirsName { get; set; }
+        public string FirtsName { get; set; }
 
         public string LastName { get; set; }
 
@@ -17,5 +17,10 @@
         public bool IsActive { get; set; }
 
         public User User { get; set; }
+
+        public bool WasSaved { get; set; }
+        public bool IsEdit { get; set; }
+
+        public string FullName => $"{FirtsName} {LastName}";
     }
 }

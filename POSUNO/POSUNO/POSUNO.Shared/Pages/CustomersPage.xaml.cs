@@ -1,4 +1,5 @@
 ﻿using POSUNO.Components;
+using POSUNO.Dialogs;
 using POSUNO.Helpers;
 using POSUNO.Models;
 using System;
@@ -62,6 +63,67 @@ namespace POSUNO.Pages
             CustomersListView.ItemsSource = null;
             CustomersListView.Items.Clear();
             CustomersListView.ItemsSource = Customers;
+        }
+
+        private async void AddCustomerButton_Click(object sender, RoutedEventArgs e)
+        {
+            Customer customer = new Customer();
+            CustomerDialog dialog = new CustomerDialog(customer);
+            await dialog.ShowAsync();
+            if(!customer.WasSaved)
+            {
+                return;
+            }
+
+            customer.User = MainPage.GetInstance().User;
+            Loader loader = new Loader("Por favor espere...");
+            loader.Show();
+            Response response = await ApiService.PostAsync("Customers", customer);
+
+            loader.Close();
+
+            if(!response.IsSuccess)
+            {
+                MessageDialog dialogMessage = new MessageDialog(response.Message, "Error");
+                await dialogMessage.ShowAsync();
+                return;
+            }
+
+            Customer newCustomer = (Customer)response.Result;
+            Customers.Add(newCustomer);
+            RefreshList();
+        }
+
+        private async void EditCustomerButton_Click(object sender, RoutedEventArgs e)
+        {
+            Customer customer = Customers[CustomersListView.SelectedIndex];
+            customer.IsEdit = true;
+            CustomerDialog dialog = new CustomerDialog(customer);
+            await dialog.ShowAsync();
+
+            if (!customer.WasSaved)
+            {
+                return;
+            }
+
+            customer.User = MainPage.GetInstance().User;
+            Loader loader = new Loader("Por favor espere...");
+            loader.Show();
+            Response response = await ApiService.PutAsync("Customers", customer,customer.Id);
+
+            loader.Close();
+
+            if (!response.IsSuccess)
+            {
+                MessageDialog dialogMessage = new MessageDialog(response.Message, "Error");
+                await dialogMessage.ShowAsync();
+                return;
+            }
+
+            Customer newCustomer = (Customer)response.Result;
+            Customer oldCustomer = Customers.FirstOrDefault(c => c.Id == newCustomer.Id);
+            oldCustomer = newCustomer;
+            RefreshList();
         }
     }
 }

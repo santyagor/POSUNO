@@ -8,7 +8,7 @@ namespace POSUNO.Api.Data.Entities
 
         [Required]
         [MaxLength(50)]
-        public string FirsName { get; set; }
+        public string FirtsName { get; set; }
 
         [Required]
         [MaxLength(50)]

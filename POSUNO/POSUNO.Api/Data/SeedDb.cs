@@ -43,7 +43,7 @@ namespace POSUNO.Api.Data
                 User user = await _context.Users.FirstOrDefaultAsync();
                 for (int i = 1; i < 50; i++)
                 {
-                    _context.Customers.Add(new Customer { FirsName = $"Cliente {i}", LastName = $"Apellido {i}",Phonenumber ="0998984439",Email=$"cliente{i}@gmail.com", Address="Calle 100",IsActive=true, User = user });
+                    _context.Customers.Add(new Customer { FirtsName = $"Cliente {i}", LastName = $"Apellido {i}",Phonenumber ="0998984439",Email=$"cliente{i}@gmail.com", Address="Calle 100",IsActive=true, User = user });
                 }
                 await _context.SaveChangesAsync();
             }
