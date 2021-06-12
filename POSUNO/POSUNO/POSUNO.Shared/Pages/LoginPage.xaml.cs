@@ -35,6 +35,10 @@ namespace POSUNO.Pages
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             bool isValid = await ValidForm();
+#if DEBUG
+            EmailTextBox.Text = "santyagor@outlook.com";
+            PasswordPasswordBox.Password = "123456";
+#endif
             if (!isValid)
             {
                 return;
@@ -42,11 +46,13 @@ namespace POSUNO.Pages
 
             Loader loader = new Loader("Por favor espere...");
             loader.Show();
+
             Response response = await ApiService.LoginAsync(new LoginRequest
             {
                 Email = EmailTextBox.Text,
                 Password = PasswordPasswordBox.Password,
             });
+
             loader.Close();
             MessageDialog messageDialog;
             if (!response.IsSuccess)
