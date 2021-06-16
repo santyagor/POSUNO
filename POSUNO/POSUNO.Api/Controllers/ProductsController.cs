@@ -50,6 +50,12 @@ namespace POSUNO.Api.Controllers
             {
                 return BadRequest();
             }
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == product.User.Email);
+            if (user == null)
+            {
+                return BadRequest("Usuario no existe");
+            }
+            product.User = user;
 
             _context.Entry(product).State = EntityState.Modified;
 
@@ -69,7 +75,7 @@ namespace POSUNO.Api.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(product);
         }
 
         // POST: api/Products

@@ -1,4 +1,5 @@
 ﻿using POSUNO.Components;
+using POSUNO.Dialogs;
 using POSUNO.Helpers;
 using POSUNO.Models;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Popups;
@@ -61,6 +63,104 @@ namespace POSUNO.Pages
             ProductsListView.ItemsSource = null;
             ProductsListView.Items.Clear();
             ProductsListView.ItemsSource = Products;
+        }
+
+
+        private async void AddProductButton_Click(object sender, RoutedEventArgs e)
+        {
+            Product product = new Product();
+            ProductDialog dialog = new ProductDialog(product);
+            await dialog.ShowAsync();
+            if (!product.WasSaved)
+            {
+                return;
+            }
+            product.User = MainPage.GetInstance().User;
+            Loader loader = new Loader("Por favor espere...");
+            loader.Show();
+            Response response = await ApiService.PostAsync("Products", product);
+
+            loader.Close();
+
+            if (!response.IsSuccess)
+            {
+                MessageDialog dialogMessage = new MessageDialog(response.Message, "Error");
+                await dialogMessage.ShowAsync();
+                return;
+            }
+
+            Product newProduct = (Product)response.Result;
+            Products.Add(newProduct);
+            RefreshList();
+        }
+
+        private async void EditImage_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Product product = Products[ProductsListView.SelectedIndex];
+            product.IsEdit = true;
+            ProductDialog dialog = new ProductDialog(product);
+            await dialog.ShowAsync();
+
+            if (!product.WasSaved)
+            {
+                return;
+            }
+
+            product.User = MainPage.GetInstance().User;
+            Loader loader = new Loader("Por favor espere...");
+            loader.Show();
+            Response response = await ApiService.PutAsync("Products", product, product.Id);
+
+            loader.Close();
+
+            if (!response.IsSuccess)
+            {
+                MessageDialog dialogMessage = new MessageDialog(response.Message, "Error");
+                await dialogMessage.ShowAsync();
+                return;
+            }
+
+            Product newProduct = (Product)response.Result;
+            Product oldProduct = Products.FirstOrDefault(c => c.Id == newProduct.Id);
+            oldProduct = newProduct;
+            RefreshList();
+        }
+
+        private async void DeleteImage_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ContentDialogResult result = await ConfirmDeleteAsync();
+            if (result != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            Loader loader = new Loader("Por favor espere...");
+            loader.Show();
+            Product product = Products[ProductsListView.SelectedIndex];
+            Response response = await ApiService.DeleteAsync("Products", product.Id);
+            loader.Close();
+            if (!response.IsSuccess)
+            {
+                MessageDialog dialogMessage = new MessageDialog(response.Message, "Error");
+                await dialogMessage.ShowAsync();
+                return;
+            }
+            List<Product> products = Products.Where(c => c.Id != product.Id).ToList();
+            Products = new ObservableCollection<Product>(products);
+            RefreshList();
+        }
+
+        private async Task<ContentDialogResult> ConfirmDeleteAsync()
+        {
+            ContentDialog confirmDialog = new ContentDialog
+            {
+                Title = "Confimación",
+                Content = "¿Está seguro de querer borrar el registro?",
+                PrimaryButtonText = "Si",
+                CloseButtonText = "No"
+            };
+
+            return await confirmDialog.ShowAsync();
         }
     }
 }

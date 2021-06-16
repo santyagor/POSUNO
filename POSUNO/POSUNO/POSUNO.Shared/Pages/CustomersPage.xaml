@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
             <TextBlock Text="Clientes" HorizontalAlignment="Center" FontSize="30" FontWeight="Bold"/>
-            <Button Content="Adicionar cliente" HorizontalAlignment="Right" Background="Navy" Foreground="White" Margin="0,-40,0,0" Tapped="AddCustomerButton_Click"/>
+            <Button Content="Adicionar cliente" HorizontalAlignment="Right" Background="Navy" Foreground="White" Margin="0,-40,0,0" Click="AddCustomerButton_Click"/>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
