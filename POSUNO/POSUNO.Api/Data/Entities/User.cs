@@ -1,19 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace POSUNO.Api.Data.Entities
 {
-    public class User
+    public class User : IdentityUser
     {
-
-        public int Id { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -23,12 +15,10 @@ namespace POSUNO.Api.Data.Entities
         [MaxLength(50)]
         public string LastName { get; set; }
 
-        [Required]
-        [MaxLength(20)]
-        [MinLength(6)]
-        public string Password { get; set; }
 
         public ICollection<Product> Products { get; set; }
+
+        public ICollection<Customer> Customers { get; set; }
 
     }
 }
