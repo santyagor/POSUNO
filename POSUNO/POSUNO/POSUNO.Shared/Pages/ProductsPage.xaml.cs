@@ -75,7 +75,7 @@ namespace POSUNO.Pages
             {
                 return;
             }
-            product.User = MainPage.GetInstance().User;
+
             Loader loader = new Loader("Por favor espere...");
             loader.Show();
             Response response = await ApiService.PostAsync("Products", product);
@@ -106,7 +106,6 @@ namespace POSUNO.Pages
                 return;
             }
 
-            product.User = MainPage.GetInstance().User;
             Loader loader = new Loader("Por favor espere...");
             loader.Show();
             Response response = await ApiService.PutAsync("Products", product, product.Id);

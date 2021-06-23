@@ -16,9 +16,6 @@ namespace POSUNO.Api.Data.Entities
         public string LastName { get; set; }
 
 
-        public ICollection<Product> Products { get; set; }
-
-        public ICollection<Customer> Customers { get; set; }
 
     }
 }

@@ -24,7 +24,7 @@ namespace POSUNO.Pages
     public sealed partial class MainPage : Page
     {
         private static MainPage _instance;
-        public User User { get; set; }
+        public TokenResponse TokenResponse { get; set; }
         public MainPage()
         {
             this.InitializeComponent();
@@ -39,8 +39,8 @@ namespace POSUNO.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            User = (User)e.Parameter;
-            WelcomeTextBlock.Text = $"Bienvenid@: {User.FullName}";
+            TokenResponse = (TokenResponse)e.Parameter;
+            WelcomeTextBlock.Text = $"Bienvenid@: {TokenResponse.User.FullName}";
             MyFrame.Navigate(typeof(CustomersPage));
         }
 
